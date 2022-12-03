@@ -2,14 +2,15 @@ import numpy as np
 import pygame as pg
 import sys
 
-#set display vars
+#set constant vars
 (SCREEN_WIDTH, SCREEN_HEIGHT) = (600, 600)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (230, 20, 20)
 CELLS_WIDTH = 3
 CELLS_HEIGHT = 3
 
-player_1_turn = True 
+
 screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 running = True
 
@@ -33,11 +34,18 @@ def draw_turn(player_1_turn, cells_width, cells_height, cell_x_pos, cell_y_pos, 
             pg.draw.line(screen, BLACK, (cell_x_pos * cell_width + cell_width / 5, cell_y_pos * cell_height + cell_height / 5), (cell_x_pos * cell_width + cell_width * 4 / 5, cell_y_pos * cell_height + cell_height * 4 / 5), 2)
             pg.draw.line(screen, BLACK, (cell_x_pos * cell_width + cell_width * 4 / 5, cell_y_pos * cell_height + cell_height / 5), (cell_x_pos * cell_width + cell_width / 5, cell_y_pos * cell_height + cell_height * 4 / 5), 2)
 
+def draw_win(win_start_cell, win_end_cell, cells_width, cells_height, screen):
+    cell_width = screen.get_width() / cells_width
+    cell_height = screen.get_height() / cells_height
+    pg.draw.line(screen, RED, (win_start_cell[0] * cell_width + cell_width / 2, win_start_cell[1] * cell_height + cell_height / 2), (win_end_cell[0] * cell_width + cell_width / 2, win_end_cell[1] * cell_height + cell_height / 2), 2)
+
 draw_line(CELLS_WIDTH, CELLS_HEIGHT, screen)
 
 draw_turn(False, CELLS_WIDTH, CELLS_HEIGHT, 1, 2, screen)
 
 draw_turn(True, CELLS_WIDTH, CELLS_HEIGHT, 0, 1, screen)
+
+draw_win((0, 2), (2, 0), CELLS_WIDTH, CELLS_HEIGHT, screen)
 
 #game loop
 while running:
