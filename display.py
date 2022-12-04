@@ -1,6 +1,7 @@
 import numpy as np
 import pygame as pg
 import sys
+import math
 
 #set constant vars
 (SCREEN_WIDTH, SCREEN_HEIGHT) = (600, 600)
@@ -13,6 +14,7 @@ CELLS_HEIGHT = 3
 
 screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 running = True
+player_1_turn = True 
 
 #initialise display
 screen.fill(WHITE)
@@ -39,11 +41,10 @@ def draw_win(win_start_cell, win_end_cell, cells_width, cells_height, screen):
     cell_height = screen.get_height() / cells_height
     pg.draw.line(screen, RED, (win_start_cell[0] * cell_width + cell_width / 2, win_start_cell[1] * cell_height + cell_height / 2), (win_end_cell[0] * cell_width + cell_width / 2, win_end_cell[1] * cell_height + cell_height / 2), 2)
 
+#initialises board
 draw_line(CELLS_WIDTH, CELLS_HEIGHT, screen)
 
-draw_turn(False, CELLS_WIDTH, CELLS_HEIGHT, 1, 2, screen)
 
-draw_turn(True, CELLS_WIDTH, CELLS_HEIGHT, 0, 1, screen)
 
 draw_win((0, 2), (2, 0), CELLS_WIDTH, CELLS_HEIGHT, screen)
 
@@ -53,4 +54,17 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        if event.type == pg.MOUSEBUTTONUP:
+            player_turn_pos = pg.mouse.get_pos()
+            x_cell_clicked = math.ceil(player_turn_pos[0] * CELLS_WIDTH / screen.get_width() ) - 1
+            y_cell_clicked = math.ceil(player_turn_pos[1] * CELLS_HEIGHT / screen.get_height() ) - 1
+            print(player_turn_pos)
+            print(x_cell_clicked, y_cell_clicked)
+            if player_1_turn == False:
+                player_1_turn = True
+            else:
+                player_1_turn = False
+            draw_turn(player_1_turn, CELLS_WIDTH, CELLS_HEIGHT, x_cell_clicked, y_cell_clicked, screen)
+            pg.display.flip()
+
 
