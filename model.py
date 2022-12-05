@@ -1,8 +1,9 @@
 import numpy as np
 
 class Board:
-    def __init__(self):
-        self.board = [[0, 0, 0] for i in range(3)]
+    def __init__(self, size: int):
+        self.board = [[0 for x in range(size)] for y in range(size)]
+        self.size = size
         self.num_moves = 0
 
     @property
@@ -17,24 +18,41 @@ class Board:
     
     def check_winner(self):
         for row in self.board:
-            if sum(row) == 3:
+            if sum(row) == self.size:
                 return 1
-            elif sum(row) == -3:
+            elif sum(row) == -self.size:
                 return -1
         for col in np.array(self.board).transpose().tolist():
-            if sum(col) == 3:
+            if sum(col) == self.size:
                 return 1
-            elif sum(col) == -3:
+            elif sum(col) == -self.size:
                 return -1
         # forward diagonal
-        if sum(np.diag(np.array(self.board))) == 3:
+        if sum(np.diag(np.array(self.board))) == self.size:
             return 1
-        elif sum(np.diag(np.array(self.board))) == -3:
+        elif sum(np.diag(np.array(self.board))) == -self.size:
             return -1
         # backwards diagonal
-        if np.diag(np.fliplr(np.array(self.board))) == 3:
+        if sum(np.diag(np.fliplr(np.array(self.board)))) == self.size:
             return 1
-        elif np.diag(np.fliplr(np.array(self.board))) == -3:
+        elif sum(np.diag(np.fliplr(np.array(self.board)))) == -self.size:
             return -1
         return False
+    
+    def get_winning_cells(self):
+        winner = self.check_winner()
+        if not winner:
+            raise Exception('Cannot get winning cells because there is no winner!')
+        for r, row in enumerate(self.board):
+            if sum(row) == self.size * winner:
+                return [(0, r), (self.size - 1 , r)]
+        for c, col in enumerate(np.array(self.board).transpose().tolist()):
+            if sum(col) == self.size * winner:
+                return [(c, 0), (c, self.size - 1)]
+        # forward diagonal
+        if sum(np.diag(np.array(self.board))) == self.size * winner:
+            return [(0, 0), (self.size - 1, self.size - 1)]
+        # backwards diagonal
+        if sum(np.diag(np.fliplr(np.array(self.board)))) == self.size * winner:
+            return [(self.size - 1, 0), (0, self.size - 1)]
 
